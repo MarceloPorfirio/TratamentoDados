@@ -1,25 +1,23 @@
-import pandas as pd
-import plotly.figure_factory as ff
 import plotly.express as px
+import plotly.figure_factory as ff
 import plotly.subplots as sp
-import plotly.io as pio
+import pandas as pd
 
-dados = pd.read_excel("Vendas.xlsx")
+# Lê o arquivo Excel
+df_vendas = pd.read_excel('vendas.xlsx')
 
-# Agrupar os dados por 'ID Loja' e somar o 'Valor Final'
-resultado = dados.groupby('ID Loja')['Valor Final'].sum()
+# Agrupa por ID Loja e soma o valor final
+df_resultado = df_vendas.groupby(['ID Loja']).sum()['Valor Final'].reset_index()
 
-# Criar um novo dataframe com o resultado
-df_resultado = pd.DataFrame(resultado).reset_index()
-
-# Altera o renderizador para jupyterlab
-pio.renderers.default = 'jupyterlab'
-
-# Cria a tabela com plotly.figure_factory
-fig2 = ff.create_table(df_resultado)
 
 # Cria o gráfico de barras com plotly.express
 fig1 = px.bar(df_resultado, x='ID Loja', y='Valor Final', title='Valor Final por ID Loja')
+
+# Converte o dataframe para uma matriz de valores
+table_data = df_resultado.to_numpy()
+
+# Cria a tabela com plotly.figure_factory
+fig2 = ff.create_table(table_data)
 
 # Cria um objeto subplot com 2 linhas e 1 coluna
 fig = sp.make_subplots(rows=2, cols=1)
